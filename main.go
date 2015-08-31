@@ -20,7 +20,6 @@ const (
 	ErrorPanic
 	ErrorTokenEmpty
 	ErrorChannelEmpty
-	ErrorMessageEmpty
 )
 
 func errorExitParm(message string, returnCode int) {
@@ -45,8 +44,6 @@ func initFlags() {
 		errorExitParm("-token is a required parameter.", ErrorTokenEmpty)
 	} else if *fChannel == "" {
 		errorExitParm("-channel is a required parameter.", ErrorChannelEmpty)
-	} else if *fMessage == "" {
-		errorExitParm("-message is a required parameter.", ErrorMessageEmpty)
 	}
 }
 

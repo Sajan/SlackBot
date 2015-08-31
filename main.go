@@ -11,7 +11,6 @@ import (
 	"github.com/bluele/slack"
 )
 
-var fQuiet = flag.Bool("quiet", false, "Exit and set an error code, but do not print an error message on the console.")
 var fToken = flag.String("token", "", "slack authentication token")
 var fChannel = flag.String("channel", "", "slack channel name")
 var fMessage = flag.String("message", "", "message")
@@ -19,24 +18,14 @@ var fMessage = flag.String("message", "", "message")
 // Error Codes that are returned via os.Exit
 const (
 	ErrorNone = iota
-	ErrorPanic
+	ErrorUnknown
 	ErrorTokenEmpty
 	ErrorChannelEmpty
 )
 
 func errorExitParm(message string, returnCode int) {
-	if !*fQuiet {
-		fmt.Println(message)
-	}
+	fmt.Println(message)
 	os.Exit(returnCode)
-}
-
-func errorExitPanic(err error) {
-	if !*fQuiet {
-		panic(err)
-	} else {
-		os.Exit(ErrorPanic)
-	}
 }
 
 func initFlags() {
@@ -56,13 +45,13 @@ func main() {
 
 	channel, err := api.FindChannelByName(*fChannel)
 	if err != nil {
-		errorExitPanic(err)
+		panic(err)
 	}
 
 	if len(*fMessage) > 0 {
 		err = api.ChatPostMessage(channel.Id, *fMessage, nil)
 		if err != nil {
-			errorExitPanic(err)
+			panic(err)
 		}
 	}
 
@@ -71,7 +60,7 @@ func main() {
 		if len(b) > 0 {
 			err = api.ChatPostMessage(channel.Id, string(b), nil)
 			if err != nil {
-				errorExitPanic(err)
+				panic(err)
 			}
 		}
 	}

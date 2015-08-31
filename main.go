@@ -1,3 +1,4 @@
+// slackbot is a simple command line program that posts messages in a slack channel.
 package main
 
 import (
@@ -13,6 +14,7 @@ var fToken = flag.String("token", "", "slack authentication token")
 var fChannel = flag.String("channel", "", "slack channel name")
 var fMessage = flag.String("message", "", "message")
 
+// Error Codes that are returned via os.Exit
 const (
 	ErrorNone = iota
 	ErrorPanic
@@ -21,14 +23,14 @@ const (
 	ErrorMessageEmpty
 )
 
-func ErrorExitParm(message string, returnCode int) {
+func errorExitParm(message string, returnCode int) {
 	if !*fQuiet {
 		fmt.Println(message)
 	}
 	os.Exit(returnCode)
 }
 
-func ErrorExitPanic(err error) {
+func errorExitPanic(err error) {
 	if !*fQuiet {
 		panic(err)
 	} else {
@@ -40,11 +42,11 @@ func initFlags() {
 	flag.Parse()
 
 	if *fToken == "" {
-		ErrorExitParm("-token is a required parameter.", ErrorTokenEmpty)
+		errorExitParm("-token is a required parameter.", ErrorTokenEmpty)
 	} else if *fChannel == "" {
-		ErrorExitParm("-channel is a required parameter.", ErrorChannelEmpty)
+		errorExitParm("-channel is a required parameter.", ErrorChannelEmpty)
 	} else if *fMessage == "" {
-		ErrorExitParm("-message is a required parameter.", ErrorMessageEmpty)
+		errorExitParm("-message is a required parameter.", ErrorMessageEmpty)
 	}
 }
 
@@ -55,11 +57,11 @@ func main() {
 
 	channel, err := api.FindChannelByName(*fChannel)
 	if err != nil {
-		ErrorExitPanic(err)
+		errorExitPanic(err)
 	}
 
 	err = api.ChatPostMessage(channel.Id, *fMessage, nil)
 	if err != nil {
-		ErrorExitPanic(err)
+		errorExitPanic(err)
 	}
 }

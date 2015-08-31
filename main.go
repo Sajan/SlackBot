@@ -4,8 +4,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
 
+	"github.com/andrew-d/go-termutil"
 	"github.com/bluele/slack"
 )
 
@@ -57,8 +59,20 @@ func main() {
 		errorExitPanic(err)
 	}
 
-	err = api.ChatPostMessage(channel.Id, *fMessage, nil)
-	if err != nil {
-		errorExitPanic(err)
+	if len(*fMessage) > 0 {
+		err = api.ChatPostMessage(channel.Id, *fMessage, nil)
+		if err != nil {
+			errorExitPanic(err)
+		}
+	}
+
+	if !termutil.Isatty(os.Stdin.Fd()) {
+		b, _ := ioutil.ReadAll(os.Stdin)
+		if len(b) > 0 {
+			err = api.ChatPostMessage(channel.Id, string(b), nil)
+			if err != nil {
+				errorExitPanic(err)
+			}
+		}
 	}
 }

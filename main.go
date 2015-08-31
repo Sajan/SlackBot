@@ -57,11 +57,9 @@ func main() {
 
 	if !termutil.Isatty(os.Stdin.Fd()) {
 		b, _ := ioutil.ReadAll(os.Stdin)
-		if len(b) > 0 {
-			err = api.ChatPostMessage(channel.Id, string(b), nil)
-			if err != nil {
-				panic(err)
-			}
+		err = api.ChatPostMessage(channel.Id, string(b), nil)
+		if err != nil {
+			panic(err)
 		}
 	}
 }

@@ -14,7 +14,7 @@ import (
 var fChannel = flag.String("channel", "", "slack channel name")
 var fMessage = flag.String("message", "", "message")
 var fToken = flag.String("token", "", "slack authentication token")
-var fUsername = flag.String("username", slack.DEFAULT_MESSAGE_USERNAME, "Username to use when posting")
+var fUsername = flag.String("username", slack.DEFAULT_MESSAGE_USERNAME, "username to use when posting")
 
 // Error Codes that are returned via os.Exit
 const (

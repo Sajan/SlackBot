@@ -8,12 +8,13 @@ import (
 	"os"
 
 	"github.com/andrew-d/go-termutil"
-	"github.com/bluele/slack"
+	"github.com/nlopes/slack"
 )
 
-var fToken = flag.String("token", "", "slack authentication token")
 var fChannel = flag.String("channel", "", "slack channel name")
 var fMessage = flag.String("message", "", "message")
+var fToken = flag.String("token", "", "slack authentication token")
+var fUsername = flag.String("username", slack.DEFAULT_MESSAGE_USERNAME, "Username to use when posting")
 
 // Error Codes that are returned via os.Exit
 const (
@@ -38,9 +39,12 @@ func initFlags() {
 	}
 }
 
-func slackMessage(api *slack.Slack, channel *slack.Channel, message string) {
+func slackMessage(api *slack.Client, message string) {
 	if len(message) > 0 {
-		err := api.ChatPostMessage(channel.Id, message, nil)
+		parms := slack.PostMessageParameters{
+			Username: *fUsername,
+		}
+		_, _, err := api.PostMessage(*fChannel, message, parms)
 		if err != nil {
 			panic(err)
 		}
@@ -51,13 +55,9 @@ func main() {
 	initFlags()
 
 	api := slack.New(*fToken)
-	channel, err := api.FindChannelByName(*fChannel)
-	if err != nil {
-		panic(err)
-	}
 
 	// If the user filled in the -message parameter, send that message out
-	slackMessage(api, channel, *fMessage)
+	slackMessage(api, *fMessage)
 
 	// If the user passed in input via stdin, send that out too
 	if !termutil.Isatty(os.Stdin.Fd()) {
@@ -66,6 +66,6 @@ func main() {
 			panic(err)
 		}
 
-		slackMessage(api, channel, string(b))
+		slackMessage(api, string(b))
 	}
 }

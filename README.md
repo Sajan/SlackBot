@@ -8,5 +8,6 @@ Really simple bot that spams your slack channels from the console...
             message
       -token string
             slack authentication token
-
+      -username string
+            Username to use when posting
 This program also accepts input from stdin.

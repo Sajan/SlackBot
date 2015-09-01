@@ -51,7 +51,6 @@ func main() {
 	initFlags()
 
 	api := slack.New(*fToken)
-
 	channel, err := api.FindChannelByName(*fChannel)
 	if err != nil {
 		panic(err)

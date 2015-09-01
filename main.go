@@ -38,6 +38,15 @@ func initFlags() {
 	}
 }
 
+func slackMessage(api *slack.Slack, channel *slack.Channel, message string) {
+	if len(message) > 0 {
+		err := api.ChatPostMessage(channel.Id, message, nil)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
 func main() {
 	initFlags()
 
@@ -48,21 +57,14 @@ func main() {
 		panic(err)
 	}
 
-	if len(*fMessage) > 0 {
-		err = api.ChatPostMessage(channel.Id, *fMessage, nil)
-		if err != nil {
-			panic(err)
-		}
-	}
+	slackMessage(api, channel, *fMessage)
 
 	if !termutil.Isatty(os.Stdin.Fd()) {
 		b, err := ioutil.ReadAll(os.Stdin)
 		if err != nil {
 			panic(err)
 		}
-		err = api.ChatPostMessage(channel.Id, string(b), nil)
-		if err != nil {
-			panic(err)
-		}
+
+		slackMessage(api, channel, string(b))
 	}
 }

@@ -57,8 +57,10 @@ func main() {
 		panic(err)
 	}
 
+	// If the user filled in the -message parameter, send that message out
 	slackMessage(api, channel, *fMessage)
 
+	// If the user passed in input via stdin, send that out too
 	if !termutil.Isatty(os.Stdin.Fd()) {
 		b, err := ioutil.ReadAll(os.Stdin)
 		if err != nil {

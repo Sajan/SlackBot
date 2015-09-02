@@ -11,3 +11,5 @@ Really simple bot that spams your slack channels from the console...
       -username string
             username to use when posting
 This program also accepts input from stdin.
+
+[![Build Status](https://travis-ci.org/Sajan/slackbot.svg)](https://travis-ci.org/Sajan/slackbot)

@@ -11,9 +11,9 @@ import (
 	"github.com/nlopes/slack"
 )
 
-var fChannel = flag.String("channel", "", "slack channel name")
+var fChannel = flag.String("channel", "", "slack channel name (required)")
 var fMessage = flag.String("message", "", "message")
-var fToken = flag.String("token", "", "slack authentication token")
+var fToken = flag.String("token", "", "slack authentication token (required)")
 var fUsername = flag.String("username", slack.DEFAULT_MESSAGE_USERNAME, "username to use when posting")
 
 // Error Codes that are returned via os.Exit
@@ -25,17 +25,25 @@ const (
 )
 
 func errorExitParm(message string, returnCode int) {
+	flag.Usage()
+
+	fmt.Println()
 	fmt.Println(message)
+
 	os.Exit(returnCode)
 }
 
 func initFlags() {
+	flag.Usage = func() {
+		fmt.Println("Full Source Available Here: https://github.com/Sajan/slackbot")
+		flag.PrintDefaults()
+	}
 	flag.Parse()
 
 	if *fToken == "" {
-		errorExitParm("-token is a required parameter.", ErrorTokenEmpty)
+		errorExitParm("-token is a required parameter, but it is missing.", ErrorTokenEmpty)
 	} else if *fChannel == "" {
-		errorExitParm("-channel is a required parameter.", ErrorChannelEmpty)
+		errorExitParm("-channel is a required parameter, but it is missing.", ErrorChannelEmpty)
 	}
 }
 
